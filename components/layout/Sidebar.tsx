@@ -23,7 +23,7 @@ const Sidebar = () => {
           href={route.path}
           key={route.path}
           className={`flex items-center gap-4 p-3 rounded-lg hover:bg-[#FFF8EB]
-          ${pathname.startsWith(route.path) && "bg-[#FDAB04] hover:bg-[#FDAB04]/80"}
+          ${pathname.startsWith(route.path) && "bg-[#ec5252] hover:bg-[#ec5252]/80"}
           `}
         >
           {route.icon} {route.label}

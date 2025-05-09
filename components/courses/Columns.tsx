@@ -56,7 +56,7 @@ export const columns: ColumnDef<Course>[] = [
       return (
         <Badge
           className={`${
-            isPublished && "bg-[#FDAB04] text-black hover:bg-[#FDAB04]"
+            isPublished && "bg-[#ec5252] text-black hover:bg-[#ec5252]"
           }`}
         >
           {isPublished ? "Published" : "Draft"}
@@ -69,7 +69,7 @@ export const columns: ColumnDef<Course>[] = [
     cell: ({ row }) => (
       <Link
         href={`/instructor/courses/${row.original.id}/basic`}
-        className="flex gap-2 items-center hover:text-[#FDAB04]"
+        className="flex gap-2 items-center hover:text-[#ec5252]"
       >
         <Pencil className="h-4 w-4" /> Edit
       </Link>

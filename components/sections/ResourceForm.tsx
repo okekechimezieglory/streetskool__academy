@@ -98,7 +98,7 @@ const ResourceForm = ({ section, courseId }: ResourceFormProps) => {
               {resource.name}
             </div>
             <button
-              className="text-[#FDAB04]"
+              className="text-[#ec5252]"
               disabled={isSubmitting}
               onClick={() => onDelete(resource.id)}
             >

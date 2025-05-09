@@ -71,7 +71,7 @@ const Delete = ({ item, courseId, sectionId }: DeleteProps) => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction className="bg-[#FDAB04]" onClick={onDelete}>Delete</AlertDialogAction>
+          <AlertDialogAction className="bg-[#ec5252]" onClick={onDelete}>Delete</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

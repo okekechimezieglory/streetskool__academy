@@ -74,12 +74,12 @@ const SectionList = ({ items, onReorder, onEdit }: SectionListProps) => {
                     className="flex items-center bg-[#FFF8EB] rounded-lg text-sm font-medium p-3"
                   >
                     <div {...provided.dragHandleProps}>
-                      <Grip className="h-4 w-4 cursor-pointer mr-4 hover:text-[#FDAB04]" />
+                      <Grip className="h-4 w-4 cursor-pointer mr-4 hover:text-[#ec5252]" />
                     </div>
                     {section.title}
                     <div className="ml-auto">
                       <Pencil
-                        className="h-4 w-4 cursor-pointer hover:text-[#FDAB04]"
+                        className="h-4 w-4 cursor-pointer hover:text-[#ec5252]"
                         onClick={() => onEdit(section.id)}
                       />
                     </div>
