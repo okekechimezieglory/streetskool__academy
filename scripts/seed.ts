@@ -9,8 +9,15 @@ async function main() {
         subCategories: {
           create: [
             { name: "Web Development" },
+            { name: "Mobile App Development" },
             { name: "Data Science" },
-            { name: "Cybersecurity" },
+            { name: "Cyber Security" },
+            { name: "Cloud Computing" },
+            { name: "Dev Ops" },
+            { name: "Game Development" },
+            { name: "Web3 Development" },
+            { name: "Data Analysis" },
+            { name: "AI/ML" },
             { name: "Others" },
           ],
         },
@@ -30,10 +37,11 @@ async function main() {
         name: "Design",
         subCategories: {
           create: [
-            { name: "Graphic Design" },
+            { name: "Graphics Design" },
             { name: "3D & Animation" },
             { name: "Interior Design" },
-            { name: "Others" },
+            { name: "UI/UX Design" },
+            { name: "Product Management" },
           ],
         },
       },

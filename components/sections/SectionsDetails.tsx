@@ -46,7 +46,7 @@ const SectionsDetails = ({
       const response = await axios.post(`/api/courses/${course.id}/checkout`);
       window.location.assign(response.data.url);
     } catch (err) {
-      console.log("Failed to chechout course", err);
+      console.log("Failed to checkout course", err);
       toast.error("Something went wrong!");
     } finally {
       setIsLoading(false);
