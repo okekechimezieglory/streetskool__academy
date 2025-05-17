@@ -19,6 +19,8 @@ import MuxPlayer from "@mux/mux-player-react";
 import Link from "next/link";
 import ProgressButton from "./ProgressButton";
 import SectionMenu from "../layout/SectionMenu";
+// import {QRCode} from 'qrcode.react';
+import QRCodeCanvas from 'qrcode.react'; // For Canvas
 
 interface SectionsDetailsProps {
   course: Course & { sections: Section[] };
@@ -40,18 +42,36 @@ const SectionsDetails = ({
   const [isLoading, setIsLoading] = useState(false);
   const isLocked = !purchase && !section.isFree;
 
+  // const buyCourse = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     const response = await axios.post(`/api/courses/${course.id}/checkout`);
+  //     window.location.assign(response.data.url);
+  //   } catch (err) {
+  //     console.log("Failed to checkout course", err);
+  //     toast.error("Something went wrong!");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
   const buyCourse = async () => {
-    try {
-      setIsLoading(true);
-      const response = await axios.post(`/api/courses/${course.id}/checkout`);
-      window.location.assign(response.data.url);
-    } catch (err) {
-      console.log("Failed to checkout course", err);
-      toast.error("Something went wrong!");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  try {
+    setIsLoading(true);
+    const response = await axios.post(`/api/courses/${course.id}/checkout`);
+    const { url } = response.data;
+    // Set the payment URL to state
+    setPaymentUrl(url);
+    window.location.assign(url);
+  } catch (err) {
+    console.log("Failed to checkout course", err);
+    toast.error("Something went wrong!");
+  } finally {
+    setIsLoading(false);
+  }
+};
+  
 
   return (
     <div className="px-6 py-4 flex flex-col gap-5">
@@ -108,6 +128,13 @@ const SectionsDetails = ({
           </Link>
         ))}
       </div>
+      {/* QR Code Display */}
+      {paymentUrl && (
+        <div className="mt-5">
+          <h2 className="text-xl font-bold mb-2">Scan to Pay</h2>
+          <QRCodeCanvas value={paymentUrl} />
+        </div>
+      )}
     </div>
   );
 };

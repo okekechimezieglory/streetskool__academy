@@ -1,9 +1,11 @@
-import Stripe from "stripe";
+// import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
+import { Connection, PublicKey, Keypair } from "@solana/web3.js";
 import { currentUser } from "@clerk/nextjs/server";
 
 import { db } from "@/lib/db";
-import { stripe } from "@/lib/stripe";
+import { encodeURL, createQR } from "@solana/pay";
+import { BigNumber } from "bignumber.js";
 
 export const POST = async (
   req: NextRequest,
@@ -24,6 +26,11 @@ export const POST = async (
       return new NextResponse("Course Not Found", { status: 404 });
     }
 
+    // Ensure price is not null
+    if (course.price === null) {
+      return new NextResponse("Course price is not available", { status: 400 });
+  }
+
     const purchase = await db.purchase.findUnique({
       where: {
         customerId_courseId: { customerId: user.id, courseId: course.id },
@@ -34,53 +41,27 @@ export const POST = async (
       return new NextResponse("Course Already Purchased", { status: 400 });
     }
 
-    const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [
-      {
-        quantity: 1,
-        price_data: {
-          currency: "cad",
-          product_data: {
-            name: course.title,
-          },
-          unit_amount: Math.round(course.price! * 100),
-        },
-      }
-    ]
-
-    let stripeCustomer = await db.stripeCustomer.findUnique({
-      where: { customerId: user.id },
-      select: { stripeCustomerId: true },
+    // Create a connection to the Solana cluster
+    const connection = new Connection("https://api.mainnet-beta.solana.com");
+    // Define the recipient's wallet address
+    const recipient = new PublicKey("84yzjGocEHwC3qqkfPK2fDTgENqgaU3s259zPdbqu4jQ");
+    // Create a payment request
+    const amount = new BigNumber(course.price); // Amount in SOL
+    
+     const reference = Keypair.generate().publicKey;
+    const url = encodeURL({
+        recipient,
+        amount,
+        reference,
     });
 
-    if (!stripeCustomer) {
-      const customer = await stripe.customers.create({
-        email: user.emailAddresses[0].emailAddress,
-      });
+    // Return the URL to the client
+    return NextResponse.json({ url });
 
-      stripeCustomer = await db.stripeCustomer.create({
-        data: {
-          customerId: user.id,
-          stripeCustomerId: customer.id,
-        },
-      });
-    }
-
-    const session = await stripe.checkout.sessions.create({
-      customer: stripeCustomer.stripeCustomerId,
-      payment_method_types: ["card"],
-      line_items,
-      mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/courses/${course.id}/overview?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/courses/${course.id}/overview?canceled=true`,
-      metadata: {
-        courseId: course.id,
-        customerId: user.id,
-      }
-    });
-
-    return NextResponse.json({ url: session.url })
+    //return NextResponse.json({ url: session.url })
   } catch (err) {
-    console.log("[courseId_checkout_POST]", err);
+    //console.log("[courseId_checkout_POST]", err);
+    console.log(err);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 };
