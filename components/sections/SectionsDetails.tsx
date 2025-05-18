@@ -10,6 +10,7 @@ import {
 } from "@prisma/client";
 import toast from "react-hot-toast";
 import { useState } from "react";
+import { useEffect, useRef } from "react";
 import axios from "axios";
 import { File, Loader2, Lock } from "lucide-react";
 
@@ -19,8 +20,7 @@ import MuxPlayer from "@mux/mux-player-react";
 import Link from "next/link";
 import ProgressButton from "./ProgressButton";
 import SectionMenu from "../layout/SectionMenu";
-// import {QRCode} from 'qrcode.react';
-import QRCodeCanvas from 'qrcode.react'; // For Canvas
+import { createQR } from "@solana/pay";
 
 interface SectionsDetailsProps {
   course: Course & { sections: Section[] };
@@ -40,6 +40,8 @@ const SectionsDetails = ({
   progress,
 }: SectionsDetailsProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const qrCodeRef = useRef<HTMLDivElement | null>(null); // Ref for QR code element
+
   const isLocked = !purchase && !section.isFree;
 
   // const buyCourse = async () => {
@@ -72,6 +74,12 @@ const SectionsDetails = ({
   }
 };
   
+useEffect(() => {
+  if (paymentUrl && qrCodeRef.current) {
+    const qrCode = createQR(paymentUrl); // Create QR code
+    qrCode.append(qrCodeRef.current); // Append QR code to the ref element
+  }
+}, [paymentUrl]);
 
   return (
     <div className="px-6 py-4 flex flex-col gap-5">
@@ -129,12 +137,7 @@ const SectionsDetails = ({
         ))}
       </div>
       {/* QR Code Display */}
-      {paymentUrl && (
-        <div className="mt-5">
-          <h2 className="text-xl font-bold mb-2">Scan to Pay</h2>
-          <QRCodeCanvas value={paymentUrl} />
-        </div>
-      )}
+      <div className="mt-5" ref={qrCodeRef} /> {/* QR code container */}
     </div>
   );
 };

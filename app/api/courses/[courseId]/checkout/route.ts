@@ -1,10 +1,9 @@
-// import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
 import { Connection, PublicKey, Keypair } from "@solana/web3.js";
 import { currentUser } from "@clerk/nextjs/server";
-
+import { getSolToUsdRate } from "@/lib/getSolToUsdRate";
 import { db } from "@/lib/db";
-import { encodeURL, createQR } from "@solana/pay";
+import { encodeURL } from "@solana/pay";
 import { BigNumber } from "bignumber.js";
 
 export const POST = async (
@@ -41,26 +40,29 @@ export const POST = async (
       return new NextResponse("Course Already Purchased", { status: 400 });
     }
 
+    // Fetch the current SOL to USD exchange rate
+    const solToUsdRate = await getSolToUsdRate();
+    const amountInDollars = new BigNumber(course.price);
+    const amountInSol = amountInDollars.div(solToUsdRate); // Convert to SOL
+
     // Create a connection to the Solana cluster
     const connection = new Connection("https://api.mainnet-beta.solana.com");
     // Define the recipient's wallet address
     const recipient = new PublicKey("84yzjGocEHwC3qqkfPK2fDTgENqgaU3s259zPdbqu4jQ");
-    // Create a payment request
-    const amount = new BigNumber(course.price); // Amount in SOL
-    
+
      const reference = Keypair.generate().publicKey;
     const url = encodeURL({
         recipient,
-        amount,
+        amount: amountInSol,
         reference,
+        label: "Streetschool Course Purchase",
+        message: `Payment for course: ${course.title}`,
     });
 
     // Return the URL to the client
     return NextResponse.json({ url });
 
-    //return NextResponse.json({ url: session.url })
   } catch (err) {
-    //console.log("[courseId_checkout_POST]", err);
     console.log(err);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
