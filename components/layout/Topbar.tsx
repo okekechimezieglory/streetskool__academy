@@ -23,8 +23,11 @@ const Topbar = () => {
   const pathName = usePathname();
 
   const topRoutes = [
-    { label: "Instructor", path: "/instructor/courses" },
-    { label: "Learning", path: "/learning" },
+    // { label: "Instructor", path: "/instructor/courses" },
+    // { label: "Learning", path: "/learning" },
+    { label: "Course Library", path: "/" },
+    { label: "Blog", path: "/blog" },
+    // { label: "Sign In", path: "/learning" },
   ];
 
   const sidebarRoutes = [
