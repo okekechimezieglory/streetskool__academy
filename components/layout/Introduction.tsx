@@ -15,8 +15,8 @@ const Introduction = () => {
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-2xl md:text-3xl font-bold mb-4">Welcome to Streetschool!</h2>
         <p className="text-base md:text-lg mb-6">
-          Streetschool is your go-to platform for learning and mastering new skills. 
-          Join our platform and unlock your potential with Africa's largest selection of local contents.
+          Streetschool is your go-to platform for learning and mastering new skills.
+          Join our platform and unlock your potential with Africa&apos;s largest selection of local contents.
         </p>
         <button 
           onClick={handleLearnMore} 
